@@ -1,5 +1,7 @@
 const Identity = artifacts.require('Identity.vyper');
-const birth = Date.parse('26-11-1985');
+const moment = require('moment');
+const birth = moment('26/11/1985', 'D/M/YYYY').format('X');
+
 const firstName = 'Rinaldo';
 const surname = 'Rossi';
 const secondName = '';

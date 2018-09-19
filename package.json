@@ -1,0 +1,38 @@
+{
+  "name": "identity-contract",
+  "version": "1.0.0",
+  "description": "Simple Ethereum Identity Contract write in Vyper",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build:sol": "truffle compile",
+    "build:vyper": "truper",
+    "build": "yarn run build:sol && yarn run build:vyper",
+    "console": "truffle console",
+    "migrate:ganache": "truffle migrate --network ganache",
+    "migrate:mainnet": "truffle migrate --network mainnet",
+    "test": "truffle test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magiceddy/Identity-Contract.git"
+  },
+  "keywords": [
+    "Ethereum",
+    "Vyper",
+    "Identity",
+    "Truffle"
+  ],
+  "author": "Rinaldo Rossi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/magiceddy/Identity-Contract/issues"
+  },
+  "homepage": "https://github.com/magiceddy/Identity-Contract#readme",
+  "dependencies": {
+    "bluebird": "^3.5.2",
+    "moment": "^2.22.2"
+  }
+}

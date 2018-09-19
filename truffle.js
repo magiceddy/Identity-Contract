@@ -11,7 +11,7 @@ module.exports = {
       unlocked_accounts: [],
       vmErrorsOnRPCResponse: true
     },
-    default: {
+    mainnet: {
       network_id: 1 // Ethereum public network
       // optional config values
       // host - defaults to "localhost"
