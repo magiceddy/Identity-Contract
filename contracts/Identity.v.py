@@ -12,34 +12,34 @@ Creation: event({
     _firstname: bytes32,
     _secondname: bytes32,
     _surname: bytes32,
-    _birth: timestamp,
+    _birth: int128,
     _creationTime: timestamp
 })
 
 # @dev This emits when default function is triggered
 # @param _to transaction's sender
 # @param _value transaction's value;
-Default: event(_to: indexed(address), _value: wei_value)
+Default: event({_to: indexed(address), _value: wei_value})
 
 # @dev This emits when firstname changes
 # @param _oldName old first name
 # @param _newName new first name
-NewFirstName: event(_oldName: bytes32, _newName: bytes32)
+NewFirstName: event({_oldName: bytes32, _newName: bytes32})
 
 # @dev This emits when second name changes
 # @param _oldSecondName old second name
 # @param _newSecondName new second name
-NewFirstName: event(_oldSecondName: bytes32, _newSecondName: bytes32)
+NewSecondName: event({_oldSecondName: bytes32, _newSecondName: bytes32})
 
 # @dev This emits when surname changes
 # @param _oldSurname old surname
 # @param _newSurname new surname
-NewSurname: event(_oldSurname: bytes32, _newSurname: bytes32)
+NewSurname: event({_oldSurname: bytes32, _newSurname: bytes32})
 
 # @dev This emits when birth changes
 # @param _oldBirth old birth
 # @param _newBirth new birth
-NewBirth: event(_oldBirth: bytes32, _newBirth: bytes32)
+NewBirth: event({_oldBirth: int128, _newBirth: int128})
 
 # @dev owners's address
 owner: public(address)
@@ -54,12 +54,12 @@ secondname: public(bytes32)
 surname: public(bytes32)
 
 # @dev identity date of birth
-birth: public(timestamp)
+birth: public(int128)
 
 # @dev contract creation time
 creationTime: public(timestamp)
 
-# @dev return true if sender is owner
+# @dev check if sender is owner
 # @param sender sender of message
 
 
@@ -70,43 +70,45 @@ def isOwner(sender: address) -> bool:
 
 
 # @dev constructor function
-
+# @param _firstname bytes32 representation of name
+# @param _secondname bytes32 representation of second name
+# @param _surname bytes32 representation of surname
+# @param _birth int128 datetime of birth
 
 @public
 def __init__(
-    firstname: address,
-    secondname: bytes32,
-    surname: bytes32,
-    birth: timestamp
-) -> bool:
-    assert not not firstname
-    assert not not surname
-    assert not firstname == surname
-    assert birth < block.timestamp
+    _firstname: bytes32,
+    _secondname: bytes32,
+    _surname: bytes32,
+    _birth: int128
+):
+    assert not not _firstname
+    assert not not _surname
+    assert not not _birth
 
-    self.owner = msg.sender
-    self.firstname = firstname
-    self.secondname = secondname
-    self.surname = surname
-    self.birth = birth
     self.creationTime = block.timestamp
+    self.owner = msg.sender
+    self.firstname = _firstname
+    self.secondname = _secondname
+    self.surname = _surname
+    self.birth = _birth
+
     log.Creation(self.owner, self.firstname, self.secondname,
                  self.surname, self.birth, self.creationTime)
-    return True
 
 # @dev change name
 # param name new name to set
 
 
 @public
-def setFirstName(name: bytes32) -> bytes32:
-    assert not not name
-    assert isOwner(msg.sender)
+def updateFirstName(_firstname: bytes32) -> bytes32:
+    assert not not _firstname
+    assert self.isOwner(msg.sender)
 
     oldName: bytes32 = self.firstname
-    assert not name == oldName
+    assert not _firstname == oldName
 
-    self.firstname = name
+    self.firstname = _firstname
     log.NewFirstName(oldName, self.firstname)
     return self.firstname
 
@@ -115,14 +117,14 @@ def setFirstName(name: bytes32) -> bytes32:
 
 
 @public
-def setSecondName(secondname: bytes32) -> bytes32:
-    assert not not secondname
-    assert isOwner(msg.sender)
+def updateSecondName(_secondname: bytes32) -> bytes32:
+    assert not not _secondname
+    assert self.isOwner(msg.sender)
 
     oldSecondName: bytes32 = self.secondname
-    assert not secondname == oldSecondName
+    assert not _secondname == oldSecondName
 
-    self.secondname = secondname
+    self.secondname = _secondname
     log.NewSecondName(oldSecondName, self.secondname)
     return self.secondname
 
@@ -131,14 +133,14 @@ def setSecondName(secondname: bytes32) -> bytes32:
 
 
 @public
-def setSurname(surname: bytes32) -> bytes32:
-    assert not not surname
-    assert isOwner(msg.sender)
+def updateSurname(_surname: bytes32) -> bytes32:
+    assert not not _surname
+    assert self.isOwner(msg.sender)
 
     oldSurname: bytes32 = self.surname
-    assert not secondname == oldSurname
+    assert not _surname == oldSurname
 
-    self.surname = surname
+    self.surname = _surname
     log.NewSurname(oldSurname, self.surname)
     return self.surname
 
@@ -147,16 +149,24 @@ def setSurname(surname: bytes32) -> bytes32:
 
 
 @public
-def setBirth(birth: bytes32) -> bytes32:
-    assert not not birth
-    assert isOwner(msg.sender)
+def updateBirth(_birth: int128) -> int128:
+    assert not not _birth
+    assert self.isOwner(msg.sender)
 
-    oldBirth: bytes32 = self.birth
-    assert not birth == oldBirth
+    oldBirth: int128 = self.birth
+    assert not _birth == oldBirth
 
-    self.birth = birth
+    self.birth = _birth
     log.NewBirth(oldBirth, self.birth)
     return self.birth
+
+# @dev full identity getter
+
+
+@public
+def getIdentity() -> (bytes32, bytes32, bytes32, int128, timestamp):
+    return (self.firstname, self.secondname, self.surname,
+            self.birth, self.creationTime)
 
 
 # @dev default function. Send back value to caller
